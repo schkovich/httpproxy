@@ -8,6 +8,12 @@ CONFIG_FILE=$SNAP_DATA/config
 OPTIONS="lport tport thost"
 
 ## add or replace an option inside the config file. Create the file if doesn't exist
+#todo: Consider JSON or YAML.
+# See https://stackoverflow.com/a/6852427/1781234
+# See http://www.starkandwayne.com/blog/bashing-your-yaml/
+# See https://medium.com/@frontman/how-to-parse-yaml-string-via-command-line-374567512303
+# See https://gist.github.com/pkuczynski/8665367
+# todo: if above use https://www.npmjs.com/package/config
 refresh_opt_in_config() {
     opt=$1
     value="$2"
