@@ -1,0 +1,12 @@
+{
+  "name": "httpproxy",
+  "version": "0.0.1",
+  "description": "HTTP proxy nodejs server",
+  "license": "MIT",
+  "private": true,
+  "bin": "./main.js",
+  "dependencies": {
+    "http-proxy": "^1.16.2"
+  }
+}
+

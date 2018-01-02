@@ -1,0 +1,20 @@
+name: httpproxy
+version: "0.0.1"
+summary: A simple HTTP proxy
+description: |
+  A command that simply prints hello world.
+confinement: devmode
+
+apps:
+  ws-proxy:
+    command: httpproxy
+    daemon: simple
+    restart-condition: always
+    plugs: [network-bind]
+
+parts:
+  proxy:
+    source: .
+    plugin: nodejs
+    node-packages:
+      - http-proxy
