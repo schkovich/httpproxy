@@ -26,7 +26,7 @@ To get the service logs run
 `$ journalctl -u snap.httpproxy.ws-proxy.service`
 
 To follow the service logs live add f flag
-`$ journalctl -uf snap.httpproxy.ws-proxy.service`
+`$ journalctl -fu snap.httpproxy.ws-proxy.service`
 
 To change a configuration parameter run
 `$ sudo snap set httpproxy lport=8080`
