@@ -3,7 +3,8 @@ version: "0.0.1"
 summary: A simple HTTP proxy
 description: |
   A command that simply prints hello world.
-confinement: devmode
+confinement: strict
+grade: devel
 
 apps:
   ws-proxy:
