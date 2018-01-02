@@ -33,7 +33,8 @@ proxyServer.on('connection', function(conn) {
     delete proxyServer.activeconnections[key];
   });
 });
-// we want to immediately close all connections on server restart (for port change)
+// we want to immediately close all connections on server restart (for port
+// change)
 proxyServer.force_close = function(cb) {
   proxyServer.close(cb);
   for (let key in proxyServer.activeconnections) {
@@ -50,9 +51,9 @@ function loadconfig_and_start_server() {
     let new_tport = tport;
 
     if (err) {
-      if (lport != LPORT) {
-        console.log('Error reading config file, reverting to the default port:' +
-            err);
+      if (lport !== LPORT) {
+        console.log('Error reading config file, reverting to the default port: ' +
+            LPORT + '; Error:: ' + err);
       }
     } else {
       console.log('Load port configuration');
@@ -60,9 +61,9 @@ function loadconfig_and_start_server() {
           toString().
           split('\n').
           forEach(function(line) {
-            var data = line.split('=');
+            let data = line.split('=');
 
-            if (data[1] == undefined) {
+            if (typeof data[1] === 'undefined') {
               return;
             }
 
@@ -93,7 +94,8 @@ function loadconfig_and_start_server() {
     }
 
     // reload server if needed
-    if ((new_lport != lport) || (new_thost != thost) || (new_tport != tport) || !proxyServer._handle) {
+    if ((new_lport !== lport) || (new_thost !== thost) ||
+        (new_tport !== tport) || !proxyServer._handle) {
       proxyServer.force_close(() => {
         // Setup our server to proxy standard HTTP requests
         let proxy = new httpProxy.createProxyServer({
@@ -102,7 +104,7 @@ function loadconfig_and_start_server() {
             port: new_tport,
           },
         });
-        proxyServer.on("request", (request, response) => {
+        proxyServer.on('request', (request, response) => {
           proxy.web(request, response);
         });
         // Listen to the `upgrade` event and proxy the
