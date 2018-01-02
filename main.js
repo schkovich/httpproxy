@@ -25,7 +25,7 @@ const CONFIG_FILE = path.join(CONFIG_DIR, 'config');
 const proxyServer = http.createServer();
 
 proxyServer.activeconnections = {};
-
+//todo: consider https://github.com/hunterloftis/stoppable
 proxyServer.on('connection', function(conn) {
   let key = conn.remoteAddress + ':' + conn.remotePort;
   proxyServer.activeconnections[key] = conn;
@@ -42,9 +42,21 @@ proxyServer.force_close = function(cb) {
   }
 };
 
+function readConfig(callback) {
+
+  fs.readFile(CONFIG_FILE, (error, content) => {
+    if (error) {
+      return callback(error);
+    }
+    callback(null, content);
+  });
+}
+
 function loadconfig_and_start_server() {
+
   console.log('(re)starting!');
-  fs.readFile(CONFIG_FILE, (err, data) => {
+
+  readConfig((error, content) => {
 
     let new_lport = lport;
     let new_thost = thost;
@@ -52,13 +64,14 @@ function loadconfig_and_start_server() {
 
     if (err) {
       if (lport !== LPORT) {
+        //todo: reverting to the default port?! how is that supposed to work?
         console.log('Error reading config file, reverting to the default port: ' +
             LPORT + '; Error:: ' + err);
       }
     } else {
-      console.log('Load port configuration');
-      fs.readFileSync(CONFIG_FILE).
-          toString().
+      console.log('Loaded configuration.');
+
+      content.toString().
           split('\n').
           forEach(function(line) {
             let data = line.split('=');
@@ -92,7 +105,6 @@ function loadconfig_and_start_server() {
             }
           });
     }
-
     // reload server if needed
     if ((new_lport !== lport) || (new_thost !== thost) ||
         (new_tport !== tport) || !proxyServer._handle) {
@@ -118,14 +130,17 @@ function loadconfig_and_start_server() {
       });
 
     }
+
   });
-
 }
+//todo: use https://github.com/paulmillr/chokidar
+fs.watchFile(CONFIG_FILE, (curr, prev) => {
 
-fs.watchFile(CONFIG_FILE, (filename, prev) => {
-  // file doesn't exist (even on startup) or exists and changed from default
-  // port
-  loadconfig_and_start_server();
+  if (curr.mtime !== prev.mtime) {
+    // file doesn't exist (even on startup) or exists and changed from default
+    // port
+    loadconfig_and_start_server();
+  }
 });
 // if file exists on startup: load config and start server here
 if (fs.existsSync(CONFIG_FILE)) {
